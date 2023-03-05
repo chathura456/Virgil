@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:virgil/proviers/models_provider.dart';
+import 'package:virgil/proviers/theme_provider.dart';
 import 'package:virgil/screens/chat_screen.dart';
 import 'package:virgil/services/asset_manager.dart';
-import 'package:virgil/widgets/text_widget.dart';
-import 'constants/my_constansts.dart';
+import 'constants/theme_data.dart';
 import 'proviers/chat_provides.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
+
 void main() {
-  runApp(const MyApp());
+  runApp( const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -23,15 +24,22 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_)=> ModelsProvider()),
         ChangeNotifierProvider(create: (_)=> ChatProvider()),
+        ChangeNotifierProvider(create: (_)=> ThemeProvider()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          scaffoldBackgroundColor: myBackgroundColor,
-          appBarTheme: AppBarTheme(color: cardColor),
-        ),
-        home: const SplashScreen(),
+      child: Consumer<ThemeProvider>(
+        builder: (context,ThemeProvider themeProvider, child){
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter Demo',
+            //darkTheme: darkTheme,
+            // darkTheme: ThemeData(
+            //   scaffoldBackgroundColor: myBackgroundColor,
+            //   appBarTheme: AppBarTheme(color: cardColor),
+            // ),
+            theme: themeProvider.darkTheme?darkTheme:lightTheme,
+            home: const SplashScreen(),
+          );
+        },
       ),
     );
   }

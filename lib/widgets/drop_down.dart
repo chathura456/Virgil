@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:virgil/constants/my_constansts.dart';
+import 'package:virgil/constants/theme_data.dart';
 import 'package:virgil/services/api_services.dart';
 import 'package:virgil/widgets/text_widget.dart';
 import 'package:virgil/proviers/models_provider.dart';
@@ -27,24 +27,30 @@ class _ModelsDropdownWidgetState extends State<ModelsDropdownWidget> {
             child: TextWidget(label: snapshots.hasError.toString(),),
           );
         }
-        return snapshots.data == null || snapshots.data!.isEmpty? const FittedBox(
+        return snapshots.data == null || snapshots.data!.isEmpty? FittedBox(
           child: SpinKitThreeBounce(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.onPrimary,
             size: 18,
           ),
         )
             :
         FittedBox(
           child: DropdownButton(
-              dropdownColor: myBackgroundColor,
-              icon: const Icon(Icons.arrow_drop_down_sharp,color: Colors.white,),
+              dropdownColor: Theme.of(context).colorScheme.primary,
+              icon: Icon(Icons.arrow_drop_down_sharp,color: Theme.of(context).colorScheme.onPrimary,),
               items: List<DropdownMenuItem<String>>.generate(
                   snapshots.data!.length,
                       (index) => DropdownMenuItem(
                       value: snapshots.data![index].id,
-                      child: TextWidget(
-                        label: snapshots.data![index].id,
-                        fontSize: 15,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 12),
+                          child: Text(snapshots.data![index].id,
+                          style: TextStyle(
+                            color:Theme.of(context).colorScheme.onPrimary,
+                            fontSize: 15,
+                          ),
+                            textAlign: TextAlign.center,
+                          ),
                       ))),
               value: currentModel,
               onChanged: (value){

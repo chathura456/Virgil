@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:virgil/constants/my_constansts.dart';
+import 'package:virgil/constants/theme_data.dart';
 import 'package:virgil/services/asset_manager.dart';
 import 'package:virgil/widgets/text_widget.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -13,7 +13,7 @@ class ChatWidget extends StatelessWidget {
     return Column(
       children: [
         Material(
-          color: chatIndex ==0?myBackgroundColor:cardColor,
+          color: chatIndex ==0?Theme.of(context).colorScheme.onTertiary:Theme.of(context).colorScheme.tertiary,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 16),
             child: chatIndex!=0?Row(
@@ -30,7 +30,9 @@ class ChatWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(right: 18),
                     child: DefaultTextStyle(
-                      style: const TextStyle(color: Colors.white,fontWeight: FontWeight.normal,fontSize: 16
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontWeight: FontWeight.normal,fontSize: 16
                       ,height: 1.6),
                         child: AnimatedTextKit(
                           repeatForever: false,
@@ -38,9 +40,6 @@ class ChatWidget extends StatelessWidget {
                           displayFullTextOnTap: true,
                           stopPauseOnTap: true,
                           totalRepeatCount: 0,
-                          onFinished: (){
-
-                          },
                           animatedTexts: [TyperAnimatedText(msg.trim())],)),
                   ),
               ),
@@ -57,7 +56,8 @@ class ChatWidget extends StatelessWidget {
                 //             color: Colors.white),
                 //       ],
                 //     )
-            ],):
+            ],)
+                :
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [

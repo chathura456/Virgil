@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:virgil/constants/my_constansts.dart';
-import 'package:virgil/models/chat_model.dart';
 import 'package:virgil/proviers/chat_provides.dart';
 import 'package:virgil/proviers/models_provider.dart';
-import 'package:virgil/services/api_services.dart';
+import 'package:virgil/proviers/theme_provider.dart';
 import 'package:virgil/services/asset_manager.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:virgil/widgets/chat_widget.dart';
 import 'package:virgil/widgets/text_widget.dart';
 import 'package:virgil/services/services.dart';
+import 'package:avatar_glow/avatar_glow.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -23,6 +22,7 @@ class _ChatScreenState extends State<ChatScreen> {
   late TextEditingController textEditingController;
   late FocusNode focusNode;
   late ScrollController _scrollController;
+
 
   @override
   void initState() {
@@ -42,24 +42,42 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
+  bool isListen = false;
+  bool micVisible = true;
+
   //List<ChatModel>chatList = [];
 
   @override
   Widget build(BuildContext context) {
     final modelsProvider = Provider.of<ModelsProvider>(context);
     final chatProvider = Provider.of<ChatProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context,listen: false);
+
     return Scaffold(
+      backgroundColor:Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        title: Image.asset(AssetManager.appName,height: 20,),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        title: Image.asset(AssetManager.appName,height: 20),
+        //title: Image.asset(AssetManager.appName,height: 20,),
         elevation: 2.0,
         // leading: Padding(
         //   padding: const EdgeInsets.fromLTRB(15, 8, 8, 8),
         //   child: Image.asset(AssetManager.openAILogo),
         // ),
+
         actions: [
+          IconButton(onPressed: (){
+            themeProvider.toggleTheme();
+          }, icon: Icon(themeProvider.darkTheme?Icons.dark_mode:Icons.light_mode,color: Colors.white,),
+          ),
+          // Switch(
+          // value: themeProvider.darkTheme,
+          // onChanged: (value){
+          //   themeProvider.toggleTheme();
+          // }),
           IconButton(
-              onPressed: () async {
-                await Services.showModalSheet(context: context);
+              onPressed: () {
+               Services.showModalSheet(context: context);
               },
               icon: const Icon(
                 Icons.more_vert,
@@ -82,8 +100,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   }),
             ),
             if (_isTyping) ...[
-              const SpinKitThreeBounce(
-                color: Colors.white,
+              SpinKitThreeBounce(
+                color: Theme.of(context).colorScheme.onSecondary,
                 size: 18,
               )
             ],
@@ -91,24 +109,77 @@ class _ChatScreenState extends State<ChatScreen> {
               height: 15,
             ),
             Material(
-              color: cardColor,
+              color: Theme.of(context).colorScheme.tertiary,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
+                     Visibility(
+                       maintainState: true,
+                       visible: micVisible,
+                       child: AvatarGlow(
+                          endRadius: 35.0,
+                            animate: isListen,
+                            duration: const Duration(milliseconds: 2000),
+                            repeat: true,
+                            repeatPauseDuration: const Duration(milliseconds: 100),
+                            showTwoGlows: true,
+                            glowColor: Theme.of(context).colorScheme.onSecondary,
+                            child: CircleAvatar(
+                              radius: 20,
+                              backgroundColor: Theme.of(context).colorScheme.onSecondary,
+                              child: IconButton(
+                                icon: Icon(Icons.mic,color: Theme.of(context).colorScheme.primary,),
+                                onPressed: (){
+                                  setState(() {
+                                    isListen = !isListen;
+                                  });
+
+                                },
+                                color: Theme.of(context).colorScheme.onSecondary,
+                              ),
+                            )
+                        ),
+                     ),
+
+
                     Expanded(
                       child: TextField(
-                        style: const TextStyle(color: Colors.white),
+                        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,),
                         focusNode: focusNode,
                         controller: textEditingController,
+                        cursorColor:Theme.of(context).colorScheme.onPrimary,
+                        onTap: (){
+                          setState(() {
+                            micVisible = false;
+                          });
+                        },
+                        onChanged: (value){
+                          if(textEditingController.text.isEmpty){
+                            setState(() {
+                              micVisible = true;
+                            });
+                          }else{
+                            setState(() {
+                              micVisible = false;
+                            });
+                          }
+                        },
                         onSubmitted: (value) async {
                           await sentMessageIst(
                               modelsProvider: modelsProvider,
                               chatProvider: chatProvider);
+                          setState(() {
+                            micVisible=true;
+                          });
                         },
-                        decoration: const InputDecoration.collapsed(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12)
+                          ),
                             hintText: 'How can I help you',
-                            hintStyle: TextStyle(color: Colors.grey)),
+                            hintStyle: const TextStyle(color: Colors.grey)
+    ),
                       ),
                     ),
                     IconButton(
@@ -116,15 +187,20 @@ class _ChatScreenState extends State<ChatScreen> {
                           await sentMessageIst(
                               modelsProvider: modelsProvider,
                               chatProvider: chatProvider);
+                          setState(() {
+                            micVisible=true;
+                          });
                         },
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.send,
-                          color: Colors.white,
-                        ))
+                          color: Theme.of(context).colorScheme.onSecondary,
+                          size: 30,
+                        ),),
                   ],
                 ),
-              ),
+
             ),
+            )
           ],
         ),
       ),
