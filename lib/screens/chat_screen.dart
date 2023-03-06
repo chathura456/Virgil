@@ -4,6 +4,7 @@ import 'package:speech_to_text/speech_to_text.dart';
 import 'package:virgil/proviers/chat_provides.dart';
 import 'package:virgil/proviers/models_provider.dart';
 import 'package:virgil/proviers/theme_provider.dart';
+import 'package:virgil/proviers/tts_provider.dart';
 import 'package:virgil/services/asset_manager.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:virgil/services/tts_service.dart';
@@ -46,6 +47,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   bool isListen = false;
   bool micVisible = true;
+  bool isSpeak = true;
   SpeechToText speechToText = SpeechToText();
   late String userInput;
 
@@ -53,8 +55,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final modelsProvider = Provider.of<ModelsProvider>(context);
-    final chatProvider = Provider.of<ChatProvider>(context);
+    final modelsProvider = Provider.of<ModelsProvider>(context,listen: false);
+    final chatProvider = Provider.of<ChatProvider>(context,listen: false);
+    final ttsProvider = Provider.of<TtsProvider>(context,listen: false);
     final themeProvider = Provider.of<ThemeProvider>(context,listen: false);
 
     return Scaffold(
@@ -73,7 +76,21 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(onPressed: (){
             themeProvider.toggleTheme();
           }, icon: Icon(themeProvider.darkTheme?Icons.dark_mode:Icons.light_mode,color: Colors.white,),
+
           ),
+    IconButton(onPressed: (){
+      setState(() {
+
+        if(ttsProvider.isSpeak){
+          TextToSpeech.mute();
+        }else{
+          TextToSpeech.initTTS();
+        }
+        ttsProvider.toggleSpeak();
+
+      });
+    },
+    icon: Icon(ttsProvider.isSpeak?Icons.volume_up:Icons.volume_off,color: Colors.white,),),
           // Switch(
           // value: themeProvider.darkTheme,
           // onChanged: (value){
@@ -104,12 +121,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     );
                   }),
             ),
-            if (_isTyping) ...[
-              SpinKitThreeBounce(
+            _isTyping? SpinKitThreeBounce(
                 color: Theme.of(context).colorScheme.onSecondary,
                 size: 18,
-              )
-            ],
+              ):const SizedBox.shrink(),
             const SizedBox(
               height: 15,
             ),
@@ -174,6 +189,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           cursorColor:Theme.of(context).colorScheme.onPrimary,
                           onTap: (){
                             setState(() {
+                              isListen = false;
                               micVisible = false;
                             });
                           },
@@ -195,6 +211,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             });
                             await sentMessageIst(
                                 modelsProvider: modelsProvider,
+                                ttsProvider: ttsProvider,
                                 chatProvider: chatProvider);
 
                           },
@@ -219,10 +236,15 @@ class _ChatScreenState extends State<ChatScreen> {
                         onPressed: () async {
                           setState(() {
                             micVisible=true;
+                            isListen = false;
                           });
                           await sentMessageIst(
                               modelsProvider: modelsProvider,
+                              ttsProvider: ttsProvider,
                               chatProvider: chatProvider);
+                          setState(() {
+                            scrollList();
+                          });
                         },
                         icon: Icon(
                           Icons.send,
@@ -243,12 +265,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
   void scrollList() {
     _scrollController.animateTo(_scrollController.position.maxScrollExtent,
-        duration: const Duration(seconds: 1), curve: Curves.easeOut);
+        duration: const Duration(seconds: 2), curve: Curves.easeOut);
   }
 
   Future<void> sentMessageIst(
       {required ModelsProvider modelsProvider,
-      required ChatProvider chatProvider}) async {
+        required TtsProvider ttsProvider,
+      required ChatProvider chatProvider
+      }) async {
     if(_isTyping){
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -279,13 +303,13 @@ class _ChatScreenState extends State<ChatScreen> {
         focusNode.unfocus();
       });
       var reply = await chatProvider.sendMessageAndGetAnswers(
+        ttsProvider: ttsProvider,
           msg: msg1,
           chosenModel: modelsProvider.getCurrentModel);
       // chatList.addAll(await ApiServices.sendMessages(
       //     message: textEditingController.text,
       //     modelId: modelsProvider.getCurrentModel));
       setState(() {
-        scrollList();
       });
     } catch (error) {
       print('error : $error');
@@ -297,9 +321,11 @@ class _ChatScreenState extends State<ChatScreen> {
       ));
     } finally {
       setState(() {
+       scrollList();
         _isTyping = false;
-        scrollList();
+
       });
     }
+
   }
 }

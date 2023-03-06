@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:virgil/constants/theme_data.dart';
+import 'package:virgil/proviers/chat_provides.dart';
 import 'package:virgil/services/asset_manager.dart';
 import 'package:virgil/widgets/text_widget.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -35,22 +37,20 @@ class ChatWidget extends StatelessWidget {
                    color: Theme.of(context).colorScheme.tertiary,
                  ),
                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width*0.75),
-
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 18),
                     child: DefaultTextStyle(
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontWeight: FontWeight.normal,fontSize: 16
-                            ,height: 1.6),
-                        child: AnimatedTextKit(
-                          repeatForever: false,
-                          isRepeatingAnimation: false,
-                          displayFullTextOnTap: true,
-                          stopPauseOnTap: true,
-                          totalRepeatCount: -1,
-                          animatedTexts: [TyperAnimatedText(msg.trim())],
-                        ),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontWeight: FontWeight.normal,fontSize: 16
+                          ,height: 1.6),
+                      child: AnimatedTextKit(
+                        repeatForever: false,
+                        isRepeatingAnimation: false,
+                        displayFullTextOnTap: true,
+                        totalRepeatCount: 1,
+                        animatedTexts: [TyperAnimatedText(msg.trim())],
+                      ),
                     ),
                   ),
                 ),
@@ -66,7 +66,8 @@ class ChatWidget extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
-                  color: Theme.of(context).colorScheme.onTertiary,
+                  //color: Theme.of(context).colorScheme.onTertiary,
+                  color: const Color(0xFF17e1af),
                 ),
                 constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width*0.6),
                     child: Padding(

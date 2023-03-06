@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:virgil/proviers/models_provider.dart';
 import 'package:virgil/proviers/theme_provider.dart';
+import 'package:virgil/proviers/tts_provider.dart';
 import 'package:virgil/screens/chat_screen.dart';
 import 'package:virgil/services/asset_manager.dart';
 import 'package:virgil/services/tts_service.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_)=> ModelsProvider()),
         ChangeNotifierProvider(create: (_)=> ChatProvider()),
         ChangeNotifierProvider(create: (_)=> ThemeProvider()),
+        ChangeNotifierProvider(create: (_)=> TtsProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context,ThemeProvider themeProvider, child){

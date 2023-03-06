@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:virgil/models/chat_model.dart';
 import 'package:virgil/proviers/models_provider.dart';
+import 'package:virgil/proviers/tts_provider.dart';
 import 'package:virgil/services/api_services.dart';
 
 class ChatProvider with ChangeNotifier{
@@ -15,9 +16,19 @@ class ChatProvider with ChangeNotifier{
     notifyListeners();
   }
 
-  Future<void>sendMessageAndGetAnswers({required String msg,required String chosenModel})async{
-    var reply = await ApiServices.sendMessages(message: msg, modelId: chosenModel);
-    chatList.addAll(reply);
+  Future<void>sendMessageAndGetAnswers({required String msg,
+    required String chosenModel,required TtsProvider ttsProvider
+  }
+      )
+  async{
+    if(chosenModel.toLowerCase().startsWith('gpt')){
+      var reply = await ApiServices.sendMessagesChatGPT(message: msg, modelId: chosenModel,ttsProvider: ttsProvider);
+      chatList.addAll(reply);
+    }
+    else{
+      var reply = await ApiServices.sendMessages(message: msg, modelId: chosenModel,ttsProvider: ttsProvider);
+      chatList.addAll(reply);
+    }
     notifyListeners();
   }
 }
