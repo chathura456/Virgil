@@ -6,6 +6,7 @@ import 'package:virgil/services/api_services.dart';
 
 class ChatProvider with ChangeNotifier{
   List<ChatModel> chatList = [];
+  int lastID = -1;
   List<ChatModel> get getChatList{
     return chatList;
   }
@@ -16,17 +17,25 @@ class ChatProvider with ChangeNotifier{
     notifyListeners();
   }
 
+  void setCheckLastID(int id){
+    lastID = id;
+    notifyListeners();
+  }
+  int get checkLastID{
+    return lastID;
+  }
+
   Future<void>sendMessageAndGetAnswers({required String msg,
-    required String chosenModel,required TtsProvider ttsProvider
+    required String chosenModel,required TtsProvider ttsProvider,required int count
   }
       )
   async{
     if(chosenModel.toLowerCase().startsWith('gpt')){
-      var reply = await ApiServices.sendMessagesChatGPT(message: msg, modelId: chosenModel,ttsProvider: ttsProvider);
+      var reply = await ApiServices.sendMessagesChatGPT(message: msg, modelId: chosenModel,ttsProvider: ttsProvider,count: count);
       chatList.addAll(reply);
     }
     else{
-      var reply = await ApiServices.sendMessages(message: msg, modelId: chosenModel,ttsProvider: ttsProvider);
+      var reply = await ApiServices.sendMessages(message: msg, modelId: chosenModel,ttsProvider: ttsProvider,count: count);
       chatList.addAll(reply);
     }
     notifyListeners();

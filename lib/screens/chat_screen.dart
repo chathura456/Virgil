@@ -12,6 +12,7 @@ import 'package:virgil/widgets/chat_widget.dart';
 import 'package:virgil/widgets/text_widget.dart';
 import 'package:virgil/services/services.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'image_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -20,7 +21,7 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMixin{
   bool _isTyping = false;
   late TextEditingController textEditingController;
   late FocusNode focusNode;
@@ -55,6 +56,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final modelsProvider = Provider.of<ModelsProvider>(context,listen: false);
     final chatProvider = Provider.of<ChatProvider>(context,listen: false);
     final ttsProvider = Provider.of<TtsProvider>(context,listen: false);
@@ -73,10 +75,21 @@ class _ChatScreenState extends State<ChatScreen> {
         // ),
 
         actions: [
+          // IconButton(onPressed: (){
+          //   themeProvider.toggleTheme();
+          // },
+          //   icon: Icon(themeProvider.darkTheme?Icons.dark_mode:Icons.light_mode,
+          //   color: Colors.white,),
+          // ),
           IconButton(onPressed: (){
-            themeProvider.toggleTheme();
-          }, icon: Icon(themeProvider.darkTheme?Icons.dark_mode:Icons.light_mode,color: Colors.white,),
-
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context){
+                return const ImageScreen();
+              })
+            );
+          },
+            icon: Icon(Icons.image,
+              color: Colors.white,),
           ),
     IconButton(onPressed: (){
       setState(() {
@@ -110,8 +123,13 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           children: [
             const SizedBox(height: 10,),
-            Flexible(
-              child: ListView.builder(
+            Expanded(
+              child: Container(
+                child: ListView.builder(
+                  shrinkWrap: true,
+
+                  addRepaintBoundaries: false,
+                  addAutomaticKeepAlives: true,
                   controller: _scrollController,
                   itemCount: chatProvider.getChatList.length,
                   itemBuilder: (context, index) {
@@ -119,7 +137,22 @@ class _ChatScreenState extends State<ChatScreen> {
                       msg: chatProvider.getChatList[index].msg,
                       chatIndex: chatProvider.getChatList[index].chatIndex,
                     );
-                  }),
+                  },
+                ),
+                // child: ListView.builder(
+                //   shrinkWrap: true,
+                //   addRepaintBoundaries: false,
+                //   addAutomaticKeepAlives: true,
+                //     controller: _scrollController,
+                //     itemCount: chatProvider.getChatList.length,
+                //     itemBuilder: (context, index) {
+                //       return ChatWidget(
+                //         msg: chatProvider.getChatList[index].msg,
+                //         chatIndex: chatProvider.getChatList[index].chatIndex,
+                //       );
+                //     },
+                //     ),
+              ),
             ),
             _isTyping? SpinKitThreeBounce(
                 color: Theme.of(context).colorScheme.onSecondary,
@@ -302,7 +335,9 @@ class _ChatScreenState extends State<ChatScreen> {
         textEditingController.clear();
         focusNode.unfocus();
       });
+      //print(chatProvider.getChatList.last);
       var reply = await chatProvider.sendMessageAndGetAnswers(
+        count: chatProvider.chatList.length,
         ttsProvider: ttsProvider,
           msg: msg1,
           chosenModel: modelsProvider.getCurrentModel);
@@ -328,4 +363,8 @@ class _ChatScreenState extends State<ChatScreen> {
     }
 
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
