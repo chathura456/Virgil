@@ -6,13 +6,14 @@ class TextWidget extends StatelessWidget {
         required this.label,
         this.fontSize = 18,
         this.color,
-        this.fontWeight})
+        this.fontWeight, this.textAlign})
       : super(key: key);
 
   final String label;
   final double fontSize;
   final Color? color;
   final FontWeight? fontWeight;
+  final TextAlign? textAlign;
   @override
   Widget build(BuildContext context) {
     return Text(
@@ -23,6 +24,6 @@ class TextWidget extends StatelessWidget {
         fontSize: fontSize,
         fontWeight: fontWeight ?? FontWeight.w500,
       ),
-      textAlign: TextAlign.end,
+      textAlign: textAlign?? TextAlign.center,
     );
   }}

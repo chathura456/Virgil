@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:virgil/proviers/chat_provides.dart';
 import 'package:virgil/proviers/models_provider.dart';
 import 'package:virgil/proviers/theme_provider.dart';
 import 'package:virgil/services/asset_manager.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:virgil/services/tts_service.dart';
 import 'package:virgil/widgets/chat_widget.dart';
 import 'package:virgil/widgets/text_widget.dart';
 import 'package:virgil/services/services.dart';
@@ -44,6 +46,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   bool isListen = false;
   bool micVisible = true;
+  SpeechToText speechToText = SpeechToText();
+  late String userInput;
 
   //List<ChatModel>chatList = [];
 
@@ -88,6 +92,7 @@ class _ChatScreenState extends State<ChatScreen> {
       body: SafeArea(
         child: Column(
           children: [
+            const SizedBox(height: 10,),
             Flexible(
               child: ListView.builder(
                   controller: _scrollController,
@@ -108,98 +113,127 @@ class _ChatScreenState extends State<ChatScreen> {
             const SizedBox(
               height: 15,
             ),
-            Material(
-              color: Theme.of(context).colorScheme.tertiary,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                     Visibility(
-                       maintainState: true,
-                       visible: micVisible,
-                       child: AvatarGlow(
-                          endRadius: 35.0,
+            Column(
+              //color: Theme.of(context).colorScheme.onSurface,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Visibility(
+                          maintainState: true,
+                          visible: micVisible,
+                          child: AvatarGlow(
+                            endRadius: 35.0,
                             animate: isListen,
                             duration: const Duration(milliseconds: 2000),
                             repeat: true,
-                            repeatPauseDuration: const Duration(milliseconds: 100),
+                            repeatPauseDuration: const Duration(milliseconds: 200),
                             showTwoGlows: true,
                             glowColor: Theme.of(context).colorScheme.onSecondary,
-                            child: CircleAvatar(
-                              radius: 20,
-                              backgroundColor: Theme.of(context).colorScheme.onSecondary,
-                              child: IconButton(
-                                icon: Icon(Icons.mic,color: Theme.of(context).colorScheme.primary,),
-                                onPressed: (){
-                                  setState(() {
-                                    isListen = !isListen;
-                                  });
+                            child: GestureDetector(
+                              onTapDown: (details) async{
+                                if(!isListen){
+                                  var available = await speechToText.initialize();
+                                  if(available){
+                                    setState(() {
+                                      isListen = true;
+                                      speechToText.listen(
+                                          onResult: (result){
+                                            setState(() {
+                                              userInput = result.recognizedWords;
+                                              textEditingController.text =userInput;
+                                              //textEditingController.text = result.recognizedWords;
+                                            });
+                                          }
+                                      );
+                                    });
+                                  }
+                                }
 
-                                },
-                                color: Theme.of(context).colorScheme.onSecondary,
+                              },
+                              onTapUp: (details) async{
+                                setState(() {
+                                  isListen = false;
+                                });
+                                await speechToText.stop();
+                              },
+                              child: CircleAvatar(
+                                radius: 20,
+                                backgroundColor: Theme.of(context).colorScheme.onSecondary,
+                                child:  Icon(isListen?Icons.mic:Icons.mic_none,color: Theme.of(context).colorScheme.primary,),
                               ),
-                            )
-                        ),
-                     ),
-
-
-                    Expanded(
-                      child: TextField(
-                        style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,),
-                        focusNode: focusNode,
-                        controller: textEditingController,
-                        cursorColor:Theme.of(context).colorScheme.onPrimary,
-                        onTap: (){
-                          setState(() {
-                            micVisible = false;
-                          });
-                        },
-                        onChanged: (value){
-                          if(textEditingController.text.isEmpty){
-                            setState(() {
-                              micVisible = true;
-                            });
-                          }else{
+                            ),
+                          )
+                      ),
+                      Expanded(
+                        child: TextField(
+                          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary,),
+                          focusNode: focusNode,
+                          controller: textEditingController,
+                          cursorColor:Theme.of(context).colorScheme.onPrimary,
+                          onTap: (){
                             setState(() {
                               micVisible = false;
                             });
-                          }
-                        },
-                        onSubmitted: (value) async {
-                          await sentMessageIst(
-                              modelsProvider: modelsProvider,
-                              chatProvider: chatProvider);
-                          setState(() {
-                            micVisible=true;
-                          });
-                        },
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12)
+                          },
+                          onChanged: (value){
+                            if(textEditingController.text.isEmpty){
+                              setState(() {
+                                micVisible = true;
+                              });
+                            }else{
+                              setState(() {
+                                micVisible = false;
+                              });
+                            }
+                          },
+                          onSubmitted: (value) async {
+
+                            setState(() {
+                              micVisible=true;
+                            });
+                            await sentMessageIst(
+                                modelsProvider: modelsProvider,
+                                chatProvider: chatProvider);
+
+                          },
+                          decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.onSecondary,),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Theme.of(context).colorScheme.onSecondary,),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              hintText: 'How can I help you',
+                              hintStyle: const TextStyle(color: Colors.grey)
                           ),
-                            hintText: 'How can I help you',
-                            hintStyle: const TextStyle(color: Colors.grey)
-    ),
+                        ),
                       ),
-                    ),
-                    IconButton(
+                      IconButton(
                         onPressed: () async {
-                          await sentMessageIst(
-                              modelsProvider: modelsProvider,
-                              chatProvider: chatProvider);
                           setState(() {
                             micVisible=true;
                           });
+                          await sentMessageIst(
+                              modelsProvider: modelsProvider,
+                              chatProvider: chatProvider);
                         },
                         icon: Icon(
                           Icons.send,
                           color: Theme.of(context).colorScheme.onSecondary,
                           size: 30,
                         ),),
-                  ],
-                ),
+                    ],
+                  ),
 
-            ),
+                ),
+              ],
             )
           ],
         ),
@@ -244,7 +278,7 @@ class _ChatScreenState extends State<ChatScreen> {
         textEditingController.clear();
         focusNode.unfocus();
       });
-      await chatProvider.sendMessageAndGetAnswers(
+      var reply = await chatProvider.sendMessageAndGetAnswers(
           msg: msg1,
           chosenModel: modelsProvider.getCurrentModel);
       // chatList.addAll(await ApiServices.sendMessages(

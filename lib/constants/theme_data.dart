@@ -7,7 +7,8 @@ Color newColor = const Color(0xFF17e1af);
 
 final lightTheme = ThemeData(
   colorScheme: ThemeData.light().colorScheme.copyWith(
-    tertiary: Colors.grey[100],
+    tertiary: Colors.grey[200],
+      onSurface: Colors.grey[100],
       onTertiary: const Color(0xFF17e1af),
       inversePrimary: Colors.white,
       background: Colors.white,
@@ -30,5 +31,6 @@ final darkTheme = ThemeData(
       secondary: const Color(0xFF444654),
       surface: Colors.grey[100],
       onSecondary: Colors.white,
+    onSurface: const Color(0xFF444654),
   )
 );

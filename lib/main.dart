@@ -4,13 +4,16 @@ import 'package:virgil/proviers/models_provider.dart';
 import 'package:virgil/proviers/theme_provider.dart';
 import 'package:virgil/screens/chat_screen.dart';
 import 'package:virgil/services/asset_manager.dart';
+import 'package:virgil/services/tts_service.dart';
 import 'constants/theme_data.dart';
 import 'proviers/chat_provides.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  TextToSpeech.initTTS();
   runApp( const MyApp());
 }
 

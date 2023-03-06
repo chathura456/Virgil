@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:virgil/constants/api_data.dart';
 import 'package:virgil/models/chat_model.dart';
 import 'package:virgil/models/models.dart';
+import 'package:virgil/services/tts_service.dart';
 
 class ApiServices{
   static Future<List<ModelsModel>>getModels()async {
@@ -46,12 +47,18 @@ class ApiServices{
       }
       List<ChatModel>chatList=[];
       if(jsonResponse['choices'].length >0){
+
         // print("response ${jsonResponse['choices'][0]['text']}");
-        chatList = List.generate(jsonResponse['choices'].length, (index) => ChatModel(
+        chatList = List.generate(jsonResponse['choices'].length, (index) {
+         return ChatModel(
             msg: jsonResponse['choices'][index]['text'],
-            chatIndex: 1)
+            chatIndex: 1);
+
+        }
         );
-      }return chatList;
+        //TextToSpeech.speak(jsonResponse['choices'][0]['text']);
+      }
+      return chatList;
     }catch(error){
       print("error $error");
       rethrow;
