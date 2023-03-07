@@ -4,6 +4,7 @@ import 'package:virgil/proviers/models_provider.dart';
 import 'package:virgil/proviers/theme_provider.dart';
 import 'package:virgil/proviers/tts_provider.dart';
 import 'package:virgil/screens/chat_screen.dart';
+import 'package:virgil/screens/image_screen.dart';
 import 'package:virgil/services/asset_manager.dart';
 import 'package:virgil/services/tts_service.dart';
 import 'constants/theme_data.dart';
@@ -69,7 +70,7 @@ class SplashScreen extends StatelessWidget {
         ),
       ),
       backgroundColor: newColor,
-      nextScreen: const ChatScreen(),
+      nextScreen: const ImageScreen(),
       splashIconSize: 350,
       duration: 3000,
       splashTransition: SplashTransition.fadeTransition,

@@ -60,7 +60,6 @@ class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMi
     final modelsProvider = Provider.of<ModelsProvider>(context,listen: false);
     final chatProvider = Provider.of<ChatProvider>(context,listen: false);
     final ttsProvider = Provider.of<TtsProvider>(context,listen: false);
-    final themeProvider = Provider.of<ThemeProvider>(context,listen: false);
 
     return Scaffold(
       backgroundColor:Theme.of(context).colorScheme.background,
@@ -124,34 +123,18 @@ class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMi
           children: [
             const SizedBox(height: 10,),
             Expanded(
-              child: Container(
-                child: ListView.builder(
-                  shrinkWrap: true,
-
-                  addRepaintBoundaries: false,
-                  addAutomaticKeepAlives: true,
-                  controller: _scrollController,
-                  itemCount: chatProvider.getChatList.length,
-                  itemBuilder: (context, index) {
-                    return ChatWidget(
-                      msg: chatProvider.getChatList[index].msg,
-                      chatIndex: chatProvider.getChatList[index].chatIndex,
-                    );
-                  },
-                ),
-                // child: ListView.builder(
-                //   shrinkWrap: true,
-                //   addRepaintBoundaries: false,
-                //   addAutomaticKeepAlives: true,
-                //     controller: _scrollController,
-                //     itemCount: chatProvider.getChatList.length,
-                //     itemBuilder: (context, index) {
-                //       return ChatWidget(
-                //         msg: chatProvider.getChatList[index].msg,
-                //         chatIndex: chatProvider.getChatList[index].chatIndex,
-                //       );
-                //     },
-                //     ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                addRepaintBoundaries: false,
+                addAutomaticKeepAlives: true,
+                controller: _scrollController,
+                itemCount: chatProvider.getChatList.length,
+                itemBuilder: (context, index) {
+                  return ChatWidget(
+                    msg: chatProvider.getChatList[index].msg,
+                    chatIndex: chatProvider.getChatList[index].chatIndex,
+                  );
+                },
               ),
             ),
             _isTyping? SpinKitThreeBounce(
@@ -238,7 +221,6 @@ class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMi
                             }
                           },
                           onSubmitted: (value) async {
-
                             setState(() {
                               micVisible=true;
                             });
@@ -358,7 +340,6 @@ class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMi
       setState(() {
        scrollList();
         _isTyping = false;
-
       });
     }
 
