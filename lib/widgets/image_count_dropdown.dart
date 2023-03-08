@@ -1,36 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:virgil/providers/size_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:virgil/providers/image_count_provider.dart';
 import 'package:virgil/widgets/text_widget.dart';
 
-class SizesDropdown extends StatefulWidget {
-  const SizesDropdown({Key? key}) : super(key: key);
+class ImageCountDropdown extends StatefulWidget {
+  const ImageCountDropdown({Key? key}) : super(key: key);
 
   @override
-  State<SizesDropdown> createState() => _SizesDropdownState();
+  State<ImageCountDropdown> createState() => _ImageCountDropdownState();
 }
 
-class _SizesDropdownState extends State<SizesDropdown> {
-  String? currentSize;
-  var sizes = ['Small (256x256)','Medium (512x512)','Large (1024x1024)'];
-  var values = ['256x256','512x512','1024x1024'];
+
+class _ImageCountDropdownState extends State<ImageCountDropdown> {
+  late ImageCountProvider countProvider;
+  int? currentCount ;
+  var count = [1,2,3,4,5,6,7,8,9,10];
   @override
   Widget build(BuildContext context) {
-    final sizesProvider = Provider.of<SizesProvider>(context,listen: false);
-    currentSize = sizesProvider.currentSize;
-   // print(currentSize);
+    countProvider = Provider.of<ImageCountProvider>(context);
+    currentCount = countProvider.currentNo;
+    print(currentCount);
     return FittedBox(
       child: DropdownButton(
           dropdownColor: Theme.of(context).colorScheme.primary,
           icon: Icon(Icons.arrow_drop_down_sharp,color: Theme.of(context).colorScheme.onPrimary,),
           items: List<DropdownMenuItem<String>>.generate(
-              3,
+              10,
                   (index) => DropdownMenuItem(
-                  value: values[index],
+                  value: count[index].toString(),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Text(sizes[index],
+                    child: Text(count[index].toString(),
                       style: TextStyle(
                         color:Theme.of(context).colorScheme.onPrimary,
                         fontSize: 15,
@@ -38,14 +40,13 @@ class _SizesDropdownState extends State<SizesDropdown> {
                       textAlign: TextAlign.center,
                     ),
                   ))),
-          value: currentSize,
+          value: currentCount.toString(),
           onChanged: (value){
             setState(() {
-              //currentSize=value.toString();
-              currentSize = value.toString();
+              currentCount = int.parse(value.toString());
+              countProvider.setCurrentNo(currentCount!);
             });
-            sizesProvider.setCurrentSize(value.toString());
-            print(currentSize);
+            print(currentCount);
           }),
     );
   }
@@ -57,12 +58,12 @@ FittedBox(
           dropdownColor: Theme.of(context).colorScheme.primary,
           icon: Icon(Icons.arrow_drop_down_sharp,color: Theme.of(context).colorScheme.onPrimary,),
           items: List<DropdownMenuItem<String>>.generate(
-              3,
+              10,
                   (index) => DropdownMenuItem(
-                  value: values[index],
+                  value: count[index].toString(),
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 12),
-                    child: Text(sizes[index],
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Text(count[index].toString(),
                       style: TextStyle(
                         color:Theme.of(context).colorScheme.onPrimary,
                         fontSize: 15,
@@ -70,14 +71,14 @@ FittedBox(
                       textAlign: TextAlign.center,
                     ),
                   ))),
-          value: currentSize,
+          value: currentCount.toString(),
           onChanged: (value){
             setState(() {
-              //currentSize=value.toString();
-              currentSize = value.toString();
+              currentCount = int.parse(value.toString());
+              countProvider.setCurrentNo(currentCount!);
             });
-            sizesProvider.setCurrentSize(value.toString());
-            print(currentSize);
+
+            print(currentCount);
           }),
     );
  */

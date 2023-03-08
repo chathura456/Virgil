@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:virgil/providers/size_provider.dart';
 import 'package:virgil/providers/theme_provider.dart';
 import 'package:virgil/widgets/drop_down.dart';
+import 'package:virgil/widgets/image_count_dropdown.dart';
 import 'package:virgil/widgets/size_dropdown.dart';
 import 'package:virgil/widgets/text_widget.dart';
 
@@ -100,6 +101,22 @@ class Services{
                     ),
                   ),
                   const SizedBox(height: 1,),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
+                    child: Row(
+                      children:  [
+                        Flexible(child: TextWidget(label: 'No of Images :',fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        )),
+                        const SizedBox(width: 30,),
+                        const Flexible(
+                          flex: 2,
+                          child: ImageCountDropdown(),
+                        )
+                      ],
+                    ),
+                  ),
 
                   Padding(
                     padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),

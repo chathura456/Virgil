@@ -1,12 +1,15 @@
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:virgil/constants/theme_data.dart';
+import 'package:virgil/providers/image_count_provider.dart';
 import 'package:virgil/providers/theme_provider.dart';
 import 'package:virgil/screens/chat_screen.dart';
 import 'package:virgil/services/asset_manager.dart';
 import 'package:virgil/services/services.dart';
+import 'package:virgil/widgets/image_count_dropdown.dart';
 
 class ImageScreen extends StatefulWidget {
   const ImageScreen({Key? key}) : super(key: key);
@@ -29,6 +32,7 @@ class _ImageScreenState extends State<ImageScreen> {
   void initState() {
     focusNode = FocusNode();
     textEditingController = TextEditingController();
+    const ImageCountDropdown();
     super.initState();
   }
 

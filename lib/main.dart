@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:virgil/providers/image_count_provider.dart';
 import 'package:virgil/providers/models_provider.dart';
 import 'package:virgil/providers/size_provider.dart';
 import 'package:virgil/providers/theme_provider.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_)=> ThemeProvider()),
         ChangeNotifierProvider(create: (_)=> TtsProvider()),
         ChangeNotifierProvider(create: (_)=> SizesProvider()),
+        ChangeNotifierProvider(create: (_)=> ImageCountProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context,ThemeProvider themeProvider, child){
