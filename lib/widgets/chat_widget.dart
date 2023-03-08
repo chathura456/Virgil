@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:virgil/proviers/chat_provides.dart';
+import 'package:virgil/providers/chat_provides.dart';
 import 'package:virgil/services/asset_manager.dart';
 import 'package:virgil/widgets/text_widget.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+
 class ChatWidget extends StatefulWidget {
   const ChatWidget({Key? key, required this.msg, required this.chatIndex}) : super(key: key);
 

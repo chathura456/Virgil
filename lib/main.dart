@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:virgil/proviers/models_provider.dart';
-import 'package:virgil/proviers/theme_provider.dart';
-import 'package:virgil/proviers/tts_provider.dart';
+import 'package:virgil/providers/models_provider.dart';
+import 'package:virgil/providers/size_provider.dart';
+import 'package:virgil/providers/theme_provider.dart';
+import 'package:virgil/providers/tts_provider.dart';
 import 'package:virgil/screens/chat_screen.dart';
 import 'package:virgil/screens/image_screen.dart';
 import 'package:virgil/services/asset_manager.dart';
 import 'package:virgil/services/tts_service.dart';
 import 'constants/theme_data.dart';
-import 'proviers/chat_provides.dart';
+import 'providers/chat_provides.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_)=> ChatProvider()),
         ChangeNotifierProvider(create: (_)=> ThemeProvider()),
         ChangeNotifierProvider(create: (_)=> TtsProvider()),
+        ChangeNotifierProvider(create: (_)=> SizesProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context,ThemeProvider themeProvider, child){

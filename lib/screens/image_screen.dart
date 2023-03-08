@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:virgil/constants/theme_data.dart';
-import 'package:virgil/proviers/theme_provider.dart';
+import 'package:virgil/providers/theme_provider.dart';
 import 'package:virgil/screens/chat_screen.dart';
 import 'package:virgil/services/asset_manager.dart';
+import 'package:virgil/services/services.dart';
 
 class ImageScreen extends StatefulWidget {
   const ImageScreen({Key? key}) : super(key: key);
@@ -39,10 +40,6 @@ class _ImageScreenState extends State<ImageScreen> {
     super.dispose();
   }
 
-  var sizes = ['Small','Medium','Large'];
-  var values = ['256*256','512*512','1024*1024'];
-  String? dropValue;
-
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context,listen: false);
@@ -72,6 +69,10 @@ class _ImageScreenState extends State<ImageScreen> {
           ),
           IconButton(
               onPressed: () {
+                setState(() {
+                  Services.showImageOptions(context: context);
+                });
+
               },
               icon: const Icon(
                 Icons.more_vert,

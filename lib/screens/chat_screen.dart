@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-import 'package:virgil/proviers/chat_provides.dart';
-import 'package:virgil/proviers/models_provider.dart';
-import 'package:virgil/proviers/theme_provider.dart';
-import 'package:virgil/proviers/tts_provider.dart';
+import 'package:virgil/providers/chat_provides.dart';
+import 'package:virgil/providers/models_provider.dart';
+import 'package:virgil/providers/theme_provider.dart';
+import 'package:virgil/providers/tts_provider.dart';
 import 'package:virgil/services/asset_manager.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:virgil/services/tts_service.dart';

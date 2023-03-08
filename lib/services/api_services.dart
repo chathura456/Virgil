@@ -4,8 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:virgil/constants/api_data.dart';
 import 'package:virgil/models/chat_model.dart';
 import 'package:virgil/models/models.dart';
-import 'package:virgil/proviers/chat_provides.dart';
-import 'package:virgil/proviers/tts_provider.dart';
+import 'package:virgil/providers/tts_provider.dart';
 import 'package:virgil/services/tts_service.dart';
 
 class ApiServices {

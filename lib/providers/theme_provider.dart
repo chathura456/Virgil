@@ -22,7 +22,7 @@ class ThemeProvider with ChangeNotifier{
   }
   _loadFromPrefs()async{
     await _initPrefs();
-    _darkTheme = _preferences.getBool(key) ?? true;
+    _darkTheme = _preferences.getBool(key) ?? false;
     notifyListeners();
   }
   _saveToPrefs()async{

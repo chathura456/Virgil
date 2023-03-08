@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
-import 'package:virgil/constants/theme_data.dart';
-import 'package:virgil/services/api_services.dart';
 import 'package:virgil/widgets/text_widget.dart';
-import 'package:virgil/proviers/models_provider.dart';
+import 'package:virgil/providers/models_provider.dart';
 
 class ModelsDropdownWidget extends StatefulWidget {
   const ModelsDropdownWidget({Key? key}) : super(key: key);

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:virgil/models/chat_model.dart';
-import 'package:virgil/proviers/models_provider.dart';
-import 'package:virgil/proviers/tts_provider.dart';
+import 'package:virgil/providers/tts_provider.dart';
 import 'package:virgil/services/api_services.dart';
 
 class ChatProvider with ChangeNotifier{
