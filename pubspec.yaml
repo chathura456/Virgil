@@ -45,6 +45,7 @@ dependencies:
   avatar_glow: ^2.0.2
   speech_to_text: ^6.1.1
   flutter_tts: ^3.6.3
+  percent_indicator: ^4.0.1
 
 flutter_icons:
   android: "launcher_icon"

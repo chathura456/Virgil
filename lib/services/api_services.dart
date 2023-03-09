@@ -113,7 +113,36 @@ class ApiServices {
       rethrow;
     }
   }
-}
+
+
+  static generateImage(String prompt, int count, String size)async{
+    var response = await http.post(
+        Uri.parse('$BASE_URL/images/generations'),
+        headers: {
+          'Authorization': 'Bearer $API_KEY',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(
+            {
+              "prompt": prompt,
+              "n": count,
+              "size": size
+            }
+        )
+    );
+    Map jsonResponse = jsonDecode(response.body);
+    if (jsonResponse['error'] != null) {
+      throw HttpException(jsonResponse['error']['message']);
+    }
+    print(jsonResponse['data'][0]['url']);
+    return (jsonResponse['data'][0]['url']);
+
+
+
+  }
+  }
+
+
 
 /*
 
