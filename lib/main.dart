@@ -74,7 +74,7 @@ class SplashScreen extends StatelessWidget {
         ),
       ),
       backgroundColor: newColor,
-      nextScreen: const ChatScreen(),
+      nextScreen: const ImageScreen(),
       splashIconSize: 350,
       duration: 3000,
       splashTransition: SplashTransition.fadeTransition,

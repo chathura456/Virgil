@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:virgil/constants/theme_data.dart';
 import 'package:virgil/providers/size_provider.dart';
 import 'package:virgil/providers/theme_provider.dart';
 import 'package:virgil/widgets/drop_down.dart';
@@ -127,7 +128,7 @@ class Services{
                             fontWeight: FontWeight.bold,
                             fontSize: 15
                         ),),
-                        const SizedBox(width: 20,),
+                        const SizedBox(width: 40,),
                         // SwitchListTile(value: value, onChanged: onChanged),
                         Switch.adaptive(
                             thumbColor: MaterialStateColor.resolveWith((states) => Theme.of(context).colorScheme.onPrimary,),
@@ -135,6 +136,36 @@ class Services{
                             onChanged: (value){
                               themeProvider.toggleTheme();
                             }),
+
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
+                    child: Row(
+                      children: [
+                        Text('My Gallery ',style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15
+                        ),),
+                        const SizedBox(width: 60,),
+                        // SwitchListTile(value: value, onChanged: onChanged),
+                        ElevatedButton.icon(
+                          onPressed: () {},
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.all(8),
+                            backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                          label: Text(
+                            'Open Gallery',
+                            style: TextStyle(color: Theme.of(context).colorScheme.primary
+                                ,fontSize: 15),
+                          ),
+                          icon: Icon(Icons.open_in_new,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
 
                       ],
                     ),
