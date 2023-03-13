@@ -6,13 +6,11 @@ import 'package:virgil/providers/size_provider.dart';
 import 'package:virgil/providers/theme_provider.dart';
 import 'package:virgil/providers/tts_provider.dart';
 import 'package:virgil/screens/chat_screen.dart';
-import 'package:virgil/screens/image_screen.dart';
 import 'package:virgil/services/asset_manager.dart';
 import 'package:virgil/services/tts_service.dart';
 import 'constants/theme_data.dart';
 import 'providers/chat_provides.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
-import 'package:page_transition/page_transition.dart';
 
 
 void main() async{
@@ -41,11 +39,6 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
-            //darkTheme: darkTheme,
-            // darkTheme: ThemeData(
-            //   scaffoldBackgroundColor: myBackgroundColor,
-            //   appBarTheme: AppBarTheme(color: cardColor),
-            // ),
             theme: themeProvider.darkTheme?darkTheme:lightTheme,
             home: const SplashScreen(),
           );
@@ -74,11 +67,10 @@ class SplashScreen extends StatelessWidget {
         ),
       ),
       backgroundColor: newColor,
-      nextScreen: const ImageScreen(),
+      nextScreen: const ChatScreen(),
       splashIconSize: 350,
       duration: 3000,
       splashTransition: SplashTransition.fadeTransition,
-      pageTransitionType: PageTransitionType.rightToLeft,
       animationDuration: const Duration(seconds: 2),
     );
   }

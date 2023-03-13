@@ -6,6 +6,7 @@ import 'package:virgil/models/chat_model.dart';
 import 'package:virgil/models/models.dart';
 import 'package:virgil/providers/tts_provider.dart';
 import 'package:virgil/services/tts_service.dart';
+import 'package:virgil/widgets/image_widget.dart';
 
 class ApiServices {
   static Future<List<ModelsModel>> getModels() async {
@@ -32,11 +33,10 @@ class ApiServices {
   }
 
   //send messages using chatGPT api
-  static Future<List<ChatModel>> sendMessagesChatGPT(
-      {required String message,
-      required String modelId,
-      required TtsProvider ttsProvider,
-      required int count}) async {
+  static Future<List<ChatModel>> sendMessagesChatGPT({required String message,
+    required String modelId,
+    required TtsProvider ttsProvider,
+    required int count}) async {
     try {
       var response = await http.post(Uri.parse('$BASE_URL/chat/completions'),
           headers: {
@@ -74,11 +74,10 @@ class ApiServices {
   }
 
   //send message using normal api
-  static Future<List<ChatModel>> sendMessages(
-      {required String message,
-      required String modelId,
-      required TtsProvider ttsProvider,
-      required int count}) async {
+  static Future<List<ChatModel>> sendMessages({required String message,
+    required String modelId,
+    required TtsProvider ttsProvider,
+    required int count}) async {
     try {
       var response = await http.post(Uri.parse('$BASE_URL/completions'),
           headers: {
@@ -115,7 +114,7 @@ class ApiServices {
   }
 
 
-  static generateImage(String prompt, int count, String size)async{
+  static generateImage(String prompt, int count, String size) async {
     var response = await http.post(
         Uri.parse('$BASE_URL/images/generations'),
         headers: {
@@ -135,12 +134,20 @@ class ApiServices {
       throw HttpException(jsonResponse['error']['message']);
     }
     print(jsonResponse['data'][0]['url']);
-    return (jsonResponse['data'][0]['url']);
+    List imageList = [];
+    if (jsonResponse['data'].length > 0) {
+      // print("response ${jsonResponse['choices'][0]['text']}");
 
-
-
+      List.generate(jsonResponse['data'].length, (index) {
+        imageList.add(jsonResponse['data'][index]['url']);
+         //ImageWidget(imageUrl: jsonResponse['data'][index]['url']);
+      });
+      //return (jsonResponse['data'][0]['url']);
+      print(imageList);
+      return imageList;
+    }
   }
-  }
+}
 
 
 

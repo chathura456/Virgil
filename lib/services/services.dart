@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:virgil/constants/theme_data.dart';
 import 'package:virgil/providers/size_provider.dart';
 import 'package:virgil/providers/theme_provider.dart';
+import 'package:virgil/screens/view_image.dart';
 import 'package:virgil/widgets/drop_down.dart';
 import 'package:virgil/widgets/image_count_dropdown.dart';
 import 'package:virgil/widgets/size_dropdown.dart';
@@ -152,7 +153,9 @@ class Services{
                         const SizedBox(width: 60,),
                         // SwitchListTile(value: value, onChanged: onChanged),
                         ElevatedButton.icon(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const ViewImage()));
+                          },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.all(8),
                             backgroundColor: Theme.of(context).colorScheme.onPrimary,
