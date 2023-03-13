@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:virgil/providers/chat_provides.dart';
 import 'package:virgil/providers/models_provider.dart';
-import 'package:virgil/providers/theme_provider.dart';
 import 'package:virgil/providers/tts_provider.dart';
 import 'package:virgil/services/asset_manager.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -35,6 +35,11 @@ class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMi
     _scrollController = ScrollController();
     focusNode = FocusNode();
     super.initState();
+    if(isNotEmpty==true){
+      setState(() {
+        isNotEmpty == false;
+      });
+    }
   }
 
   @override
@@ -47,6 +52,7 @@ class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMi
   }
 
   bool isListen = false;
+  bool isNotEmpty = false;
   bool micVisible = true;
   bool isSpeak = true;
   SpeechToText speechToText = SpeechToText();
@@ -58,7 +64,7 @@ class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMi
   Widget build(BuildContext context) {
     super.build(context);
     final modelsProvider = Provider.of<ModelsProvider>(context,listen: false);
-    final chatProvider = Provider.of<ChatProvider>(context,listen: false);
+    final chatProvider = Provider.of<ChatProvider>(context);
     final ttsProvider = Provider.of<TtsProvider>(context,listen: false);
 
     return Scaffold(
@@ -87,7 +93,7 @@ class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMi
               })
             );
           },
-            icon: Icon(Icons.image,
+            icon: const Icon(Icons.image,
               color: Colors.white,),
           ),
     IconButton(onPressed: (){
@@ -128,12 +134,46 @@ class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMi
                 addRepaintBoundaries: false,
                 addAutomaticKeepAlives: true,
                 controller: _scrollController,
-                itemCount: chatProvider.getChatList.length,
+                itemCount: chatProvider.getChatList.isNotEmpty?chatProvider.getChatList.length:1,
                 itemBuilder: (context, index) {
-                  return ChatWidget(
+                  return chatProvider.getChatList.isNotEmpty?ChatWidget(
                     msg: chatProvider.getChatList[index].msg,
                     chatIndex: chatProvider.getChatList[index].chatIndex,
-                  );
+                  )
+                  :
+                  Container(
+                    height: MediaQuery.of(context).size.height*0.7,
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Column(
+                      mainAxisAlignment:
+                      MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.text_snippet,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSecondary
+                              .withOpacity(0.4),
+                          size: MediaQuery.of(context)
+                              .size
+                              .height *
+                              0.3,
+                        ),
+                        Text(
+                          "Just enter your question or idea, and I'll do my best to assist you. \nI am always learning, so don't hesitate to ask me anything...",
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSecondary
+                                  .withOpacity(0.6),
+                              height: 1.6,
+                              fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  )
+                  ;
                 },
               ),
             ),
@@ -206,7 +246,13 @@ class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMi
                           onTap: (){
                             setState(() {
                               isListen = false;
-                              micVisible = false;
+                              //micVisible = false;
+                              if(textEditingController.text.isEmpty){
+                                  micVisible = true;
+                              }else{
+                                  micVisible = false;
+                              }
+
                             });
                           },
                           onChanged: (value){
@@ -222,6 +268,7 @@ class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMi
                           },
                           onSubmitted: (value) async {
                             setState(() {
+                              isNotEmpty = true;
                               micVisible=true;
                             });
                             await sentMessageIst(
@@ -242,14 +289,19 @@ class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMi
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              hintText: 'How can I help you',
-                              hintStyle: const TextStyle(color: Colors.grey)
+                              hintText: 'How can I assist you?',
+                              hintStyle: TextStyle(color: Theme.of(context)
+                                  .colorScheme
+                                  .onSecondary
+                                  .withOpacity(0.4),)
                           ),
+
                         ),
                       ),
                       IconButton(
                         onPressed: () async {
                           setState(() {
+                            isNotEmpty = true;
                             micVisible=true;
                             isListen = false;
                           });
@@ -289,23 +341,11 @@ class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMi
       required ChatProvider chatProvider
       }) async {
     if(_isTyping){
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: TextWidget(
-              label: 'You cannot send multiple messages at a time. ',
-            ),
-            backgroundColor: Colors.red,
-          ));
+      Fluttertoast.showToast(msg: 'You cannot send multiple messages at a time.');
       return;
     }
     if(textEditingController.text.isEmpty){
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-        content: TextWidget(
-          label: 'Please type a message',
-        ),
-        backgroundColor: Colors.red,
-      ));
+      Fluttertoast.showToast(msg: 'Please Type a message.');
       return;
     }
     try {
@@ -313,23 +353,18 @@ class _ChatScreenState extends State<ChatScreen> with AutomaticKeepAliveClientMi
       setState(() {
         _isTyping = true;
         chatProvider.addUserMessage(msg: msg1);
-        // chatList.add(ChatModel(msg: textEditingController.text, chatIndex: 0));
         textEditingController.clear();
         focusNode.unfocus();
       });
-      //print(chatProvider.getChatList.last);
-      var reply = await chatProvider.sendMessageAndGetAnswers(
+      await chatProvider.sendMessageAndGetAnswers(
         count: chatProvider.chatList.length,
         ttsProvider: ttsProvider,
           msg: msg1,
           chosenModel: modelsProvider.getCurrentModel);
-      // chatList.addAll(await ApiServices.sendMessages(
-      //     message: textEditingController.text,
-      //     modelId: modelsProvider.getCurrentModel));
       setState(() {
       });
     } catch (error) {
-      print('error : $error');
+      Fluttertoast.showToast(msg: '"error $error"');
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: TextWidget(
           label: error.toString(),

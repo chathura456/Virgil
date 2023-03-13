@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:virgil/constants/api_data.dart';
 import 'package:virgil/models/chat_model.dart';
 import 'package:virgil/models/models.dart';
 import 'package:virgil/providers/tts_provider.dart';
 import 'package:virgil/services/tts_service.dart';
-import 'package:virgil/widgets/image_widget.dart';
 
 class ApiServices {
   static Future<List<ModelsModel>> getModels() async {
@@ -27,7 +27,7 @@ class ApiServices {
       }
       return ModelsModel.modelsFromSnapshot(temp);
     } catch (error) {
-      print("error $error");
+      Fluttertoast.showToast(msg: '"error $error"');
       rethrow;
     }
   }
@@ -68,7 +68,7 @@ class ApiServices {
       }
       return chatList;
     } catch (error) {
-      print("error $error");
+      Fluttertoast.showToast(msg: '"error $error"');
       rethrow;
     }
   }
@@ -108,7 +108,7 @@ class ApiServices {
       }
       return chatList;
     } catch (error) {
-      print("error $error");
+      Fluttertoast.showToast(msg: '"error $error"');
       rethrow;
     }
   }
@@ -133,17 +133,14 @@ class ApiServices {
     if (jsonResponse['error'] != null) {
       throw HttpException(jsonResponse['error']['message']);
     }
-    print(jsonResponse['data'][0]['url']);
     List imageList = [];
     if (jsonResponse['data'].length > 0) {
       // print("response ${jsonResponse['choices'][0]['text']}");
 
       List.generate(jsonResponse['data'].length, (index) {
         imageList.add(jsonResponse['data'][index]['url']);
-         //ImageWidget(imageUrl: jsonResponse['data'][index]['url']);
       });
-      //return (jsonResponse['data'][0]['url']);
-      print(imageList);
+
       return imageList;
     }
   }

@@ -146,12 +146,13 @@ class _ImageScreenState extends State<ImageScreen> {
                                                     0.3,
                                               ),
                                               Text(
-                                                'Enter a hint or description to generate an image that fits your idea.',
+                                                'Enter a hint or description to generate an image that fits your idea..',
                                                 style: TextStyle(
                                                     color: Theme.of(context)
                                                         .colorScheme
                                                         .onSecondary
-                                                        .withOpacity(0.4),
+                                                        .withOpacity(0.6),
+                                                    height: 1.6,
                                                     fontSize: 18),
                                                 textAlign: TextAlign.center,
                                               )
@@ -227,13 +228,14 @@ class _ImageScreenState extends State<ImageScreen> {
                                       });
                                     },
                                     onSubmitted: (value) async {
-                                      setState(() {
-                                        isLoaded = false;
-                                        isSubmitted = true;
-                                        isButtonShow = false;
 
-                                      });
                                       if (textEditingController.text.isNotEmpty) {
+                                        setState(() {
+                                          isLoaded = false;
+                                          isSubmitted = true;
+                                          isButtonShow = false;
+
+                                        });
                                         imageList = await ApiServices.generateImage(
                                             textEditingController.text,
                                             countProvider.currentNo,
@@ -244,6 +246,9 @@ class _ImageScreenState extends State<ImageScreen> {
                                           isButtonShow = true;
                                           isExpanded = false;
                                         });
+                                      }
+                                      else{
+                                        Fluttertoast.showToast(msg: 'User Input cannot be null');
                                       }
 
                                     },
@@ -267,9 +272,12 @@ class _ImageScreenState extends State<ImageScreen> {
                                         border: OutlineInputBorder(
                                           borderRadius: BorderRadius.circular(12),
                                         ),
-                                        hintText: 'Enter your prompt...',
+                                        hintText: 'Please enter what you want..',
                                         hintStyle:
-                                        const TextStyle(color: Colors.grey)),
+                                        TextStyle(color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondary
+                                            .withOpacity(0.5),)),
                                   ),
                                 ),
                                 const SizedBox(
@@ -290,12 +298,13 @@ class _ImageScreenState extends State<ImageScreen> {
                                   shape: const StadiumBorder(),
                                 ),
                                 onPressed: () async {
-                                  setState(() {
-                                    isLoaded = false;
-                                    isSubmitted = true;
-                                    isButtonShow = false;
-                                  });
+
                                   if (textEditingController.text.isNotEmpty) {
+                                    setState(() {
+                                      isLoaded = false;
+                                      isSubmitted = true;
+                                      isButtonShow = false;
+                                    });
                                     imageList = await ApiServices.generateImage(
                                         textEditingController.text,
                                         countProvider.currentNo,
@@ -306,6 +315,9 @@ class _ImageScreenState extends State<ImageScreen> {
                                       isButtonShow = true;
                                       isExpanded = false;
                                     });
+                                  }
+                                  else{
+                                    Fluttertoast.showToast(msg: 'Please enter what you want..');
                                   }
                                 },
                                 child: isButtonShow
@@ -345,49 +357,4 @@ class _ImageScreenState extends State<ImageScreen> {
       ),
     );
   }
-  //
-  // shareImage()async{
-  //   await screenshotController.capture(
-  //     delay: Duration(microseconds: 100),
-  //     pixelRatio: 1.0
-  //   ).then((Uint8List? img) async {
-  //     if(img!=null){
-  //       final directory = (await getApplicationDocumentsDirectory()).path;
-  //       const fileName = 'share.png';
-  //       final imagePath = await File('$directory/$fileName').create();
-  //       await imagePath.writeAsBytes(img);
-  //
-  //       Share.shareFiles([imagePath.path],text: 'Virgil - AI Image Generator');
-  //     }else{
-  //       print('Failed to take a screenshot');
-  //     }
-  //   });
-  // }
-  //
-  // downloadImg() async {
-  //   var result = await Permission.storage.request();
-  //   if(result.isGranted){
-  //     const folderName = 'Virgil Gallery';
-  //     final fileName = '${DateTime.now().millisecondsSinceEpoch}.png';
-  //     final path = Directory('storage/emulated/0/$folderName');
-  //     if(await path.exists()){
-  //       await screenshotController.captureAndSave(path.path,delay: const Duration(milliseconds: 100),
-  //           fileName: fileName,
-  //         pixelRatio: 1.0
-  //       );
-  //       Fluttertoast.showToast(msg: 'Image is Downloaded');
-  //     }
-  //     else{
-  //       await path.create();
-  //       await screenshotController.captureAndSave(path.path,delay: const Duration(milliseconds: 100),
-  //           fileName: fileName,
-  //           pixelRatio: 1.0
-  //       );
-  //       Fluttertoast.showToast(msg: 'Image is Downloaded');
-  //
-  //     }
-  //   }else{
-  //     Fluttertoast.showToast(msg: 'Permission Denied');
-  //   }
-  // }
 }
