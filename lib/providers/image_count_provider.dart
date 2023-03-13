@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ImageCountProvider with ChangeNotifier{
-  int _currentNo = 1;
+  int _currentNo = 2;
 
   final String key1 = 'count';
   late SharedPreferences _preferences2;
@@ -25,7 +25,7 @@ class ImageCountProvider with ChangeNotifier{
   }
   _loadFromPrefs2()async{
     await _initPrefs2();
-    _currentNo = _preferences2.getInt(key1) ?? 1;
+    _currentNo = _preferences2.getInt(key1) ?? 2;
 
     notifyListeners();
   }
@@ -38,7 +38,7 @@ class ImageCountProvider with ChangeNotifier{
 
   Future getCurrentNo()async{
     _preferences2 = await _initPrefs2();
-    _currentNo = _preferences2.getInt(key1) ?? 1;
+    _currentNo = _preferences2.getInt(key1) ?? 2;
 
   }
 

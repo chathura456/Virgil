@@ -1,18 +1,17 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 class SizesProvider with ChangeNotifier{
 
-  String _currentSize = '256x256';
+  String _currentSize = '512x512';
 
 final String key1 = 'size';
-  late SharedPreferences _preferences1;
+late SharedPreferences _preferences1;
 
   String get currentSize => _currentSize;
 
   SizesProvider(){
     _loadFromPrefs1();
-    //print(_currentSize);
   }
 
   void setCurrentSize (String newSize){
@@ -25,7 +24,7 @@ final String key1 = 'size';
   }
   _loadFromPrefs1()async{
     await _initPrefs1();
-    _currentSize = _preferences1.getString(key1) ?? '256x256';
+    _currentSize = _preferences1.getString(key1) ?? '512x512';
 
     notifyListeners();
   }
@@ -34,6 +33,5 @@ final String key1 = 'size';
     _currentSize = currentSize;
     _preferences1.setString(key1, currentSize);
   }
-
 
 }

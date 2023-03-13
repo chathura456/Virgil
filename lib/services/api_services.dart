@@ -131,6 +131,7 @@ class ApiServices {
     );
     Map jsonResponse = jsonDecode(response.body);
     if (jsonResponse['error'] != null) {
+      return jsonResponse['error'];
       throw HttpException(jsonResponse['error']['message']);
     }
     List imageList = [];

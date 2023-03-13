@@ -30,7 +30,10 @@ class _ImageScreenState extends State<ImageScreen> {
   bool isSubmitted = false;
   bool isButtonShow = true;
   bool isExpanded = true;
+  bool isUrlValid = false;
+
   SpeechToText speechToText = SpeechToText();
+  late var outputData;
   late String imageUrl;
   late Image myImage;
   double loadPrc = 0.0;
@@ -236,16 +239,36 @@ class _ImageScreenState extends State<ImageScreen> {
                                           isButtonShow = false;
 
                                         });
-                                        imageList = await ApiServices.generateImage(
+
+                                        outputData = await ApiServices.generateImage(
                                             textEditingController.text,
                                             countProvider.currentNo,
                                             sizesProvider.currentSize);
-                                        setState(() {
-                                          textEditingController.clear();
-                                          isLoaded = true;
-                                          isButtonShow = true;
-                                          isExpanded = false;
-                                        });
+
+                                        isUrlValid = Uri.parse(outputData[0].toString()).isAbsolute;
+                                        if(isUrlValid){
+                                          setState(() {
+                                            imageList = outputData;
+                                            textEditingController.clear();
+                                            isLoaded = true;
+                                            isButtonShow = true;
+                                            isExpanded = false;
+                                          });
+
+                                        }
+                                        else{
+
+                                          setState(() {
+                                            textEditingController.clear();
+                                            isButtonShow = true;
+                                            isExpanded = false;
+                                            isSubmitted = false;
+                                            Fluttertoast.showToast(
+                                                msg: 'AI model cannot identified you entered data. Please try to enter meaningful keywords.').timeout(const Duration(seconds: 10));
+                                          });
+                                        }
+
+
                                       }
                                       else{
                                         Fluttertoast.showToast(msg: 'User Input cannot be null');
@@ -298,26 +321,46 @@ class _ImageScreenState extends State<ImageScreen> {
                                   shape: const StadiumBorder(),
                                 ),
                                 onPressed: () async {
-
                                   if (textEditingController.text.isNotEmpty) {
                                     setState(() {
                                       isLoaded = false;
                                       isSubmitted = true;
                                       isButtonShow = false;
+
                                     });
-                                    imageList = await ApiServices.generateImage(
+
+                                    outputData = await ApiServices.generateImage(
                                         textEditingController.text,
                                         countProvider.currentNo,
                                         sizesProvider.currentSize);
-                                    setState(() {
-                                      textEditingController.clear();
-                                      isLoaded = true;
-                                      isButtonShow = true;
-                                      isExpanded = false;
-                                    });
+
+                                    isUrlValid = Uri.parse(outputData[0].toString()).isAbsolute;
+                                    if(isUrlValid){
+                                      setState(() {
+                                        imageList = outputData;
+                                        textEditingController.clear();
+                                        isLoaded = true;
+                                        isButtonShow = true;
+                                        isExpanded = false;
+                                      });
+
+                                    }
+                                    else{
+
+                                      setState(() {
+                                        textEditingController.clear();
+                                        isButtonShow = true;
+                                        isExpanded = false;
+                                        isSubmitted = false;
+                                        Fluttertoast.showToast(
+                                            msg: 'AI model cannot identified you entered data. Please try to enter meaningful keywords.').timeout(const Duration(seconds: 10));
+                                      });
+                                    }
+
+
                                   }
                                   else{
-                                    Fluttertoast.showToast(msg: 'Please enter what you want..');
+                                    Fluttertoast.showToast(msg: 'User Input cannot be null');
                                   }
                                 },
                                 child: isButtonShow
